@@ -2,6 +2,7 @@ package ru.practicum.shareit.user;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -25,19 +26,14 @@ public class UserExceptionHandler {
 
     @ExceptionHandler(value = UserNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public Map<String, String> notFoundException(final UserNotFoundException e) {
+    public Map<String, String> notFoundUserException(final UserNotFoundException e) {
         return Map.of("Пользователь не найден", e.getMessage());
     }
 
-    @ExceptionHandler(value = HttpMessageNotReadableException.class)
+    @ExceptionHandler(value = {HttpMessageNotReadableException.class,
+            MethodArgumentNotValidException.class, NullEmailException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public Map<String, String> notFoundException(final HttpMessageNotReadableException e) {
-        return Map.of("Переданы некорректные данные", e.getMessage());
-    }
-
-    @ExceptionHandler(value = NullEmailException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public Map<String, String> notFoundException(final NullEmailException e) {
+    public Map<String, String> notValidException(final Exception e) {
         return Map.of("Переданы некорректные данные", e.getMessage());
     }
 }

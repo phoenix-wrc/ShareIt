@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.Collection;
 
 /**
@@ -21,7 +22,7 @@ public class UserController {
     }
 
     @PostMapping
-    public User createUser(@RequestBody User user) {
+    public User createUser(@Valid @RequestBody User user) {
         log.info("Добавляем {}", user);
         return service.add(user);
     }
