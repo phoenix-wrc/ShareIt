@@ -22,7 +22,7 @@ public class UserController {
 
     @PostMapping
     public User createUser(@RequestBody User user) {
-        log.debug("{}", user);
+        log.info("Добавляем {}", user);
         return service.add(user);
     }
 
@@ -34,15 +34,15 @@ public class UserController {
     }
 
     @PatchMapping("/{id}")
-    public User patch(@RequestBody User user, @PathVariable("id") Long id) {
-        log.debug("{}", user);
+    public User patch(@RequestBody User user, @PathVariable("id") long id) {
+        log.info("Обновляем пользователя {}, с ID {}", user, id);
         return service.patch(user, id);
 
     }
 
-    @GetMapping("/users")
+    @GetMapping
     public Collection<User> users() {
-        log.debug("");
+        log.info("Запросили всех пользователей");
         return service.users();
     }
 

@@ -1,11 +1,19 @@
 package ru.practicum.shareit.user;
 
 import lombok.NonNull;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Repository;
 import ru.practicum.shareit.user.exception.InvalidEmailException;
+import ru.practicum.shareit.user.exception.NullEmailException;
 
 import javax.validation.ValidationException;
-import java.util.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
 
+@Repository
+@Slf4j
 public class InMemoryUserRepositoryImpl implements UserRepository {
     private final Map<Long, User> users;
     private final Map<Long, String> emails; // Временное решение т.к. в БД это решается проще))
@@ -19,6 +27,9 @@ public class InMemoryUserRepositoryImpl implements UserRepository {
 
     @Override
     public Optional<User> add(@NonNull User user) {
+        if (user.getEmail() == null) {
+            throw new NullEmailException("Почта у нового пользователя должна быть");
+        }
         if (emails.containsValue(user.getEmail())) {
             throw new InvalidEmailException("Такая почта уже используется");
         }
@@ -33,8 +44,10 @@ public class InMemoryUserRepositoryImpl implements UserRepository {
         } else {
             throw new ValidationException("Пользователь пришел с ид");
         }
+        log.debug("Добаляем пользователя {}", user);
         emails.put(user.getId(), user.getEmail()); // Временное решение т.к. в БД это решается проще))
-        return Optional.ofNullable(users.put(user.getId(), user));
+        users.put(user.getId(), user);
+        return Optional.ofNullable(users.get(user.getId()));
     }
 
     @Override
@@ -45,7 +58,7 @@ public class InMemoryUserRepositoryImpl implements UserRepository {
 
     @Override
     public Optional<User> patch(User user, Long id) {
-        return Optional.ofNullable(users.computeIfPresent(user.getId(), (key, exsUser) -> {
+        return Optional.ofNullable(users.computeIfPresent(id, (key, exsUser) -> {
             if (user.getEmail() != null) {
                 if (emails.containsValue(user.getEmail())) {
                     if(!emails.get(id).equals(user.getEmail())) {
