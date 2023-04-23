@@ -2,6 +2,8 @@ package ru.practicum.shareit.item;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.NonNull;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.item.dto.ItemDto;
 
@@ -27,7 +29,8 @@ public class ItemController {
 //    это идентификатор пользователя, который добавляет вещь. Именно этот пользователь — владелец вещи.
 //    Идентификатор владельца будет поступать на вход в каждом из запросов, рассмотренных далее.
     @PostMapping
-    public ItemDto createItem(@RequestHeader("X-Sharer-User-Id") long ownerId, @Valid @RequestBody ItemDto item) {
+    public ItemDto createItem(@NonNull @RequestHeader("X-Sharer-User-Id") long ownerId,
+                              @NonNull @Valid @RequestBody ItemDto item) {
         log.info("Добавляем {}, владельца {}", item, ownerId);
         return service.add(item, ownerId);
     }
@@ -36,9 +39,9 @@ public class ItemController {
 //    Изменить можно название, описание и статус доступа к аренде.
 //    Редактировать вещь может только её владелец.
     @PatchMapping("/{itemId}")
-    public ItemDto patchItem(@RequestHeader("X-Sharer-User-Id") long ownerId,
-                           @RequestBody ItemDto item,
-                           @PathVariable("itemId") long id) {
+    public ItemDto patchItem(@NonNull @RequestHeader("X-Sharer-User-Id") long ownerId,
+                             @Validated @RequestBody ItemDto item,
+                             @NonNull @PathVariable("itemId") long id) {
         log.info("меняем {},владельца {}, ИД итема {}", item, ownerId, id);
         return service.patch(item, id, ownerId);
     }

@@ -57,7 +57,7 @@ public class InMemoryUserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public Optional<User> patch(User user, Long id) {
+    public Optional<User> patch(@NonNull User user, Long id) {
         return Optional.ofNullable(users.computeIfPresent(id, (key, exsUser) -> {
             if (user.getEmail() != null) {
                 if (emails.containsValue(user.getEmail())) {

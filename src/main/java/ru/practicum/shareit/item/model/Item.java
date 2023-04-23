@@ -11,7 +11,6 @@ import javax.validation.constraints.NotNull;
 @Data
 @Builder
 public class Item {
-    @NotNull
     private Long id;
     @NotNull
     @NotBlank

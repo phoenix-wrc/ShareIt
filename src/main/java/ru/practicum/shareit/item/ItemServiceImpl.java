@@ -3,7 +3,7 @@ package ru.practicum.shareit.item;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.practicum.shareit.item.dto.ItemDto;
-import ru.practicum.shareit.user.UserRepository;
+import ru.practicum.shareit.item.dto.ItemMapper;
 import ru.practicum.shareit.user.UserService;
 
 import java.util.List;
@@ -21,12 +21,13 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public ItemDto add(ItemDto item, Long ownerId) {
-        return repo.add(item, userRepo.getUser(ownerId)).orElseThrow();
+        return repo.add(ItemMapper.toItemFromDto(item, userRepo.getUser(ownerId))).orElseThrow();
     }
 
     @Override
     public ItemDto patch(ItemDto item, Long id, long ownerId) {
-        return repo.patch(item,id, ownerId).orElseThrow();
+        item.setId(id);
+        return repo.patch(item, ownerId).orElseThrow();
     }
 
     @Override
