@@ -17,11 +17,11 @@ public class ItemMapper {
     }
 
     public static Item toItemFromDto(ItemDto item, User owner) {
-        return Item.builder()
-                .name(item.getName())
-                .description(item.getDescription())
-                .available(item.getAvailable())
-                .owner(owner)
-                .build();
+        return new Item(null,
+                item.getName(),
+                item.getDescription(),
+                item.getAvailable(),
+                owner,
+                null);
     }
 }

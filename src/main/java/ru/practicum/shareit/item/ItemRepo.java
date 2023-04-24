@@ -7,8 +7,6 @@ import ru.practicum.shareit.item.dto.ItemMapper;
 import ru.practicum.shareit.item.model.Item;
 
 import javax.validation.Valid;
-import javax.validation.ValidationException;
-import javax.validation.constraints.NotBlank;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -19,36 +17,18 @@ public class ItemRepo {
     private long currentId = 1;
 
     public Optional<ItemDto> add(@Valid Item item) {
-        // Я не понимаю как работает валидация хибернейта, вернее как она не работате,
-        // единственный выход это валидировать руками
-        if (item.getAvailable() == null) {
-            throw new ValidationException("нет флага доступности");
-        }
-        if (item.getDescription() == null) {
-            throw new ValidationException("нет описания");
-        }
-        if (item.getName() == null) {
-            throw new ValidationException("нет имени");
-        }
-        if (item.getName().isEmpty()) {
-            throw new ValidationException("имя пустое");
-        }
-        if (item.getOwner() == null) {
-            throw new ValidationException("нет владельца");
-        }
-
         var id = currentId++;
         item.setId(id);
         log.info("Получили новый итем {}", item);
-
         storage.put(id, item);
-        var out = Optional.of(ItemMapper.toItemDto(storage.get(id)));
+        var out = ItemMapper.toItemDto(storage.get(id));
         log.info("положили {}", out);
-        return out;
+        return Optional.of(out);
     }
 
     public Optional<ItemDto> patch(ItemDto itemDto, long ownerId) {
         var item = storage.get(itemDto.getId());
+        // нехнаю как по другому делать, как понимаю потом сильно по другому всё будет
         if (!item.getOwner().getId().equals(ownerId)) {
             throw new NotOwnerAccessError("Не владелец не может редактировать");
         }
@@ -66,9 +46,9 @@ public class ItemRepo {
         }
         // С полем реквест Ид пока ни чего не понятно, так что просто не трогаем
         storage.put(item.getId(), item);
-        var out = Optional.of(ItemMapper.toItemDto(storage.get(item.getId())));
-        log.info("Обновили {}", out.get());
-        return out;
+        var out = ItemMapper.toItemDto(storage.get(item.getId()));
+        log.info("Обновили {}", out);
+        return Optional.of(out);
     }
 
     public Optional<ItemDto> getItemById(Long id) {
@@ -82,7 +62,7 @@ public class ItemRepo {
                 .collect(Collectors.toList());
     }
 
-    public List<ItemDto> search(@NotBlank String text) {
+    public List<ItemDto> search(String text) {
         if (text.isEmpty() && text.isBlank()) {
             return Collections.emptyList();
         }
@@ -90,7 +70,7 @@ public class ItemRepo {
         return storage.values().stream()
                 .filter(Item::getAvailable)
                 .filter(item -> (item.getName().toLowerCase().contains(text.toLowerCase())
-                || item.getDescription().toLowerCase().contains(text.toLowerCase())))
+                        || item.getDescription().toLowerCase().contains(text.toLowerCase())))
                 .map(ItemMapper::toItemDto)
                 .collect(Collectors.toList());
     }

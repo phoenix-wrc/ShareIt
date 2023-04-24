@@ -6,7 +6,9 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import ru.practicum.shareit.user.exception.*;
+import ru.practicum.shareit.user.exception.InvalidEmailException;
+import ru.practicum.shareit.user.exception.NullEmailException;
+import ru.practicum.shareit.user.exception.UserNotFoundException;
 
 import javax.validation.ValidationException;
 import java.util.Map;
@@ -18,6 +20,7 @@ public class UserExceptionHandler {
     public Map<String, String> validationException(final ValidationException e) {
         return Map.of("Данные пользователя указаны не верно", e.getMessage());
     }
+
     @ExceptionHandler(value = InvalidEmailException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
     public Map<String, String> validationException(final InvalidEmailException e) {

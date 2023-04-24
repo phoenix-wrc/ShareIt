@@ -26,7 +26,7 @@ public class InMemoryUserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public Optional<User> add(@NonNull User user) {
+    public Optional<User> add(User user) {
         if (user.getEmail() == null) {
             throw new NullEmailException("Почта у нового пользователя должна быть");
         }
@@ -61,7 +61,7 @@ public class InMemoryUserRepositoryImpl implements UserRepository {
         return Optional.ofNullable(users.computeIfPresent(id, (key, exsUser) -> {
             if (user.getEmail() != null) {
                 if (emails.containsValue(user.getEmail())) {
-                    if(!emails.get(id).equals(user.getEmail())) {
+                    if (!emails.get(id).equals(user.getEmail())) {
                         throw new InvalidEmailException("Да, при обновлении тоже работает");
                     }
                 }
@@ -77,7 +77,7 @@ public class InMemoryUserRepositoryImpl implements UserRepository {
 
     @Override
     public Optional<User> get(Long id) {
-        return Optional.of(users.get(id));
+        return Optional.ofNullable(users.get(id));
     }
 
     @Override

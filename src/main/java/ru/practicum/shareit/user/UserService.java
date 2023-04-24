@@ -1,7 +1,9 @@
 package ru.practicum.shareit.user;
 
+import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import ru.practicum.shareit.user.exception.UserNotFoundException;
 
 import java.util.Collection;
 
@@ -14,17 +16,17 @@ public class UserService {
         this.storage = storage;
     }
 
-    public User add(User user) {
-        return storage.add(user).orElseThrow();
+    public User add(@NonNull User user) {
+        return storage.add(user).orElseThrow(() -> new UserNotFoundException("что-то не получилось с добавлением"));
     }
 
-    public User delete(Long id) {
-        return storage.delete(id).orElseThrow();
+    public User delete(@NonNull Long id) {
+        return storage.delete(id).orElseThrow(() -> new UserNotFoundException("Не удалось удалить"));
 
     }
 
-    public User patch(User user, Long id) {
-        return storage.patch(user, id).orElseThrow();
+    public User patch(@NonNull User user, Long id) {
+        return storage.patch(user, id).orElseThrow(() -> new UserNotFoundException("не удалось обновить пользователя"));
 
     }
 
@@ -32,7 +34,7 @@ public class UserService {
         return storage.users();
     }
 
-    public User getUser(Long id) {
-        return storage.get(id).orElseThrow();
+    public User getUser(@NonNull Long id) {
+        return storage.get(id).orElseThrow(() -> new UserNotFoundException("Такого пользователя нет"));
     }
 }
