@@ -26,7 +26,7 @@ public class ItemRepo {
         return Optional.of(out);
     }
 
-    public Optional<ItemDto> patch(ItemDto itemDto, long ownerId) {
+    public Optional<ItemDto> patch(ItemDto itemDto, Long ownerId) {
         var item = storage.get(itemDto.getId());
         // нехнаю как по другому делать, как понимаю потом сильно по другому всё будет
         if (!item.getOwner().getId().equals(ownerId)) {

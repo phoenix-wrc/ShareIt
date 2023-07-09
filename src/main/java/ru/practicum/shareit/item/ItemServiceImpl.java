@@ -42,7 +42,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public ItemDto patch(ItemDto item, Long id, long ownerId) {
+    public ItemDto patch(ItemDto item, Long id, Long ownerId) {
         item.setId(id);
         return repo.patch(item, ownerId).orElseThrow();
     }
